@@ -2,14 +2,23 @@ package esepunittests
 
 type GradeCalculator struct {
 	grades []Grade
+	mode GradingMode
 }
 
 type GradeType int
+
 
 const (
 	Assignment GradeType = iota
 	Exam
 	Essay
+)
+
+type GradingMode int
+
+const (
+	ModeLetter GradingMode = iota
+	ModePassFail
 )
 
 var gradeTypeName = map[GradeType]string{
@@ -31,11 +40,25 @@ type Grade struct {
 func NewGradeCalculator() *GradeCalculator {
 	return &GradeCalculator{
 		grades: make([]Grade, 0),
+		mode:   ModeLetter,
 	}
+}
+
+func NewGradeCalculatorPassFail() *GradeCalculator {
+	gc := NewGradeCalculator()
+	gc.mode = ModePassFail
+	return gc
 }
 
 func (gc *GradeCalculator) GetFinalGrade() string {
 	numericalGrade := gc.calculateNumericalGrade()
+
+	if gc.mode == ModePassFail {
+		if numericalGrade >= 70 {
+			return "Pass"
+		}
+		return "Fail"
+	}
 
 	if numericalGrade >= 90 {
 		return "A"
@@ -76,9 +99,7 @@ func (gc *GradeCalculator) calculateNumericalGrade() int {
 	exam_average := computeAverage(exams)
 	essay_average := computeAverage(essays)
 
-	weighted_grade := float64(assignment_average)*.5 +
-		float64(exam_average)*.35 +
-		float64(essay_average)*.15
+	weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
 
 	return int(weighted_grade)
 }
