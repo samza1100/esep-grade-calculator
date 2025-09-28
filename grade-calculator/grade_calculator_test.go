@@ -81,3 +81,30 @@ func TestGradeTypeString(t *testing.T) {
 		t.Fatalf("Essay.String wrong: %q", Essay.String())
 	}
 }
+
+func TestPassMode_Pass(t *testing.T) {
+	// Pass if final numeric >= 70 "C"
+	g := NewGradeCalculatorPassFail()
+
+	// 100 + 80 + 60 = 50 + 28 + 9 = 87 "Pass"
+	g.AddGrade("a1", 100, Assignment)
+	g.AddGrade("e1", 80, Exam)
+	g.AddGrade("w1", 60, Essay)
+
+	if got := g.GetFinalGrade(); got != "Pass" {
+		t.Fatalf("expected Pass, got %s", got)
+	}
+}
+
+func TestPassMode_Fail(t *testing.T) {
+	g := NewGradeCalculatorPassFail()
+
+	// 50 + 40 + 20 = 25 + 14 + 3 = 42 "Fail"
+	g.AddGrade("a1", 50, Assignment)
+	g.AddGrade("e1", 40, Exam)
+	g.AddGrade("w1", 20, Essay)
+
+	if got := g.GetFinalGrade(); got != "Fail" {
+		t.Fatalf("expected Fail, got %s", got)
+	}
+}
