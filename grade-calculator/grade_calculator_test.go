@@ -34,6 +34,26 @@ func TestGetGradeB(t *testing.T) {
 	}
 }
 
+func TestGetGradeC(t *testing.T) {
+	g := NewGradeCalculator()
+	g.AddGrade("a1", 100, Assignment) 
+	g.AddGrade("e1", 58, Exam)     
+	// no essay                    
+	if got := g.GetFinalGrade(); got != "C" {
+		t.Fatalf("expected C, got %s", got)
+	}
+}
+
+func TestGetGradeD(t *testing.T) {
+	g := NewGradeCalculator()
+	g.AddGrade("a1", 100, Assignment) 
+	g.AddGrade("e1", 43, Exam) 
+	// no essay     
+	if got := g.GetFinalGrade(); got != "D" {
+		t.Fatalf("expected D, got %s", got)
+	}
+}
+
 func TestGetGradeF(t *testing.T) {
 	expected_value := "F"
 
@@ -47,5 +67,17 @@ func TestGetGradeF(t *testing.T) {
 
 	if expected_value != actual_value {
 		t.Errorf("Expected GetGrade to return '%s'; got '%s' instead", expected_value, actual_value)
+	}
+}
+
+func TestGradeTypeString(t *testing.T) {
+	if Assignment.String() != "assignment" {
+		t.Fatalf("Assignment.String wrong: %q", Assignment.String())
+	}
+	if Exam.String() != "exam" {
+		t.Fatalf("Exam.String wrong: %q", Exam.String())
+	}
+	if Essay.String() != "essay" {
+		t.Fatalf("Essay.String wrong: %q", Essay.String())
 	}
 }
